@@ -9,17 +9,17 @@ class DbFixture:
         self.user = user
         self.password = password
         self.connection = mysql.connector.connect(host=host, database=name, user=user, password=password)
-        #reset cache
+        # reset cache
         self.connection.autocommit = True
 
     def get_group_list(self):
         list = []
         cursor = self.connection.cursor()
         try:
-            cursor.execute("select group_id, group_name, group_header, group_footer from group_list")
+            cursor.execute("select group_id, group_name from group_list")
             for row in cursor:
-                (id, name, header, footer) = row
-                list.append(Group(id=str(id), name=name, header=header, footer=footer))
+                (id, name) = row
+                list.append(Group(id=str(id), name=name))
         finally:
             cursor.close()
         return list
