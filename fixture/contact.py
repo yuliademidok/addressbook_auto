@@ -1,5 +1,6 @@
 from model.contact import Contact
 import re
+from selenium.webdriver.support.ui import Select
 
 
 class ContactHelper:
@@ -93,3 +94,19 @@ class ContactHelper:
         workphone = re.search("W: (.*)", text).group(1)
         secondaryphone = re.search("P: (.*)", text).group(1)
         return Contact(homephone=homephone, mobilephone=mobilephone, workphone=workphone, secondaryphone=secondaryphone)
+
+    def select_contact_by_id(self, id):
+        driver = self.app.driver
+        driver.find_element_by_css_selector("input[id='% s']" % id).click()
+
+    def add_contact_to_group(self, id, group_name):
+        driver = self.app.driver
+        self.app.open_home_page()
+        self.select_contact_by_id(id)
+        # add contact to group
+        select = Select(driver.find_element_by_name("to_group"))
+        select.select_by_visible_text('% s' % group_name)
+        driver.find_element_by_name("add").click()
+        self.app.open_home_page()
+        self.contact_cache = None
+
